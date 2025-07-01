@@ -1,0 +1,107 @@
+/* Global CSS Variables */
+:root {
+    --bg-main: #1a1c20;
+    --bg-panel: #2a2d35;
+    --bg-control: #3c3f4a;
+    --text-primary: #e0e2e8;
+    --text-secondary: #9ea3b3;
+    --accent-primary: #8e44ad;
+    --accent-secondary: #00aaff;
+    --border-color: #4a4e59;
+    --success-color: #27ae60;
+    --shadow-color: rgba(0,0,0,0.3);
+}
+
+/* Base Styles */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    margin: 0;
+    background: var(--bg-main);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Common Component Styles */
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    outline: none;
+}
+
+.button-primary {
+    background: var(--accent-primary);
+    color: white;
+}
+
+.button-primary:hover {
+    background: color-mix(in srgb, var(--accent-primary) 90%, white);
+}
+
+.button-secondary {
+    background: var(--bg-control);
+    color: var(--text-primary);
+}
+
+.button-secondary:hover {
+    background: color-mix(in srgb, var(--bg-control) 90%, white);
+}
+
+.button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Control Panel Styles */
+.control-group {
+    background: var(--bg-control);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.control-group label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+}
+
+.control-group input[type="range"],
+.control-group input[type="number"],
+.control-group select {
+    width: 100%;
+    padding: 8px;
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-primary);
+}
+
+.control-group input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* Print Preview Styles */
+@media print {
+    body {
+        background: white;
+    }
+    
+    .controls-panel {
+        display: none;
+    }
+    
+    .print-preview {
+        padding: 0;
+        margin: 0;
+    }
+} 
