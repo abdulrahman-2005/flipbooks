@@ -2,7 +2,10 @@
     import { onMount, onDestroy } from 'svelte';
     import { browser } from '$app/environment';
     import { flipbookStore } from '$lib/stores/flipbook-store';
-    import { drawText, drawBackground, drawShapes } from '$lib/utils/animations';
+    import { drawBackgroundLayer } from '$lib/generator/layers/background';
+    import { drawShapesLayer } from '$lib/generator/layers/shapes';
+    import { drawTextLayer } from '$lib/generator/layers/text.js';
+    import { mmToPx } from '$lib/generator/core/canvas.js';
 
     let canvas;
     let ctx;
@@ -73,7 +76,7 @@
             offscreenCtx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
             
             // Draw background
-            drawBackground(offscreenCtx, $flipbookStore);
+            drawBackgroundLayer(offscreenCtx, $flipbookStore);
 
             // Draw animated shapes if enabled
             if ($flipbookStore.enableBgShapes) {
@@ -81,7 +84,7 @@
             }
 
             // Draw animated text
-            drawText(offscreenCtx, progress, $flipbookStore);
+            drawTextLayer(offscreenCtx, progress, $flipbookStore);
 
             // Copy to visible canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);

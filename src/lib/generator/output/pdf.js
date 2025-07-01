@@ -1,7 +1,14 @@
-import { mmToPx, drawText, drawShapes, drawBackground } from './animations';
-import { calculateLayout, calculateFramePositions, calculateFrameNumberPosition } from './print-layout';
+// src/lib/generator/output/pdf.js
 
-export async function generatePDF(frames, settings) {
+import { calculateLayout, calculateFramePositions, calculateFrameNumberPosition } from '../../utils/print-layout';
+
+/**
+ * Generates a PDF from the frames. 
+ * @param {Array<string>} frames - The generated frames (data URLs).
+ * @param {object} settings - The flipbook settings.
+ * @returns {Promise<jsPDF>}
+ */
+export async function generatePdf(frames, settings) {
     // Import jsPDF dynamically
     const { jsPDF } = await import('jspdf');
 
@@ -43,7 +50,6 @@ export async function generatePDF(frames, settings) {
             }
 
             try {
-                console.log(`Adding frame ${i + 1} at position:`, position);
                 // Add the frame image
                 pdf.addImage(
                     frame,
@@ -101,58 +107,4 @@ export async function generatePDF(frames, settings) {
     }
 
     return pdf;
-}
-
-// Convert canvas to data URL
-export function canvasToDataURL(canvas) {
-    return canvas.toDataURL('image/png');
-}
-
-// Generate frames from animation
-export async function generateFrames(settings, updateProgress) {
-    const frames = [];
-    const totalFrames = settings.pages;
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-
-    // Set canvas size
-    const mmToPx = (mm) => Math.round(mm * 3.7795); // 96 DPI
-    canvas.width = mmToPx(settings.pageWidthMM);
-    canvas.height = mmToPx(settings.pageHeightMM);
-
-    // Generate each frame
-    for (let i = 0; i < totalFrames; i++) {
-        const progress = i / (totalFrames - 1);
-
-        // Clear canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Draw frame content
-        drawFrame(ctx, progress, settings);
-
-        // Convert to data URL and store
-        frames.push(canvas.toDataURL('image/png'));
-
-        // Update progress
-        if (updateProgress) {
-            updateProgress((i + 1) / totalFrames);
-        }
-    }
-
-    return frames;
-}
-
-// Draw a single frame
-function drawFrame(ctx, progress, settings) {
-    // Draw background
-    ctx.fillStyle = settings.bgColor;
-    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-    // Draw animated shapes if enabled
-    if (settings.enableBgShapes) {
-        drawShapes(ctx, progress, settings);
-    }
-
-    // Draw animated text
-    drawText(ctx, progress, settings);
 }

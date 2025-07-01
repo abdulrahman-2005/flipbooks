@@ -4,6 +4,7 @@
     import ControlPanel from '$lib/components/ControlPanel.svelte';
     import MainContent from '$lib/components/MainContent.svelte';
     import { flipbookStore } from '$lib/stores/flipbook-store';
+    
 
     // Initialize jsPDF when in browser
     onMount(() => {

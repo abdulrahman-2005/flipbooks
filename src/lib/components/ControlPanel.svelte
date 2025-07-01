@@ -1,7 +1,7 @@
 <script>
     import { flipbookStore } from '$lib/stores/flipbook-store';
-    import { generateFrames } from '$lib/utils/animations';
-    import { generatePDF } from '$lib/utils/pdf-generator';
+    import { generateFlipbook } from '$lib/generator';
+    
     import TextControls from './controls/TextControls.svelte';
     import BackgroundControls from './controls/BackgroundControls.svelte';
     import AnimationControls from './controls/AnimationControls.svelte';
@@ -10,7 +10,7 @@
     let isGenerating = false;
     let progress = 0;
     let showDownloadButton = false;
-    let generatedFrames = [];
+    let generatedPdf = null;
 
     async function handleGenerate() {
         if (isGenerating) return;
@@ -18,36 +18,36 @@
         isGenerating = true;
         progress = 0;
         showDownloadButton = false;
+        generatedPdf = null;
 
         try {
-            // Generate frames with progress updates
-            generatedFrames = await generateFrames($flipbookStore, (currentProgress) => {
+            const { frames, pdf } = await generateFlipbook($flipbookStore, (currentProgress) => {
                 progress = currentProgress;
             });
 
             // Store the generated frames in the store
             flipbookStore.update(store => ({
                 ...store,
-                generatedFrames
+                generatedFrames: frames
             }));
-
+            
+            generatedPdf = pdf;
             showDownloadButton = true;
         } catch (error) {
-            console.error('Error generating frames:', error);
+            console.error('Error generating flipbook:', error);
             alert('Error generating flipbook. Please try again.');
         } finally {
             isGenerating = false;
         }
     }
 
-    async function handleDownloadPDF() {
-        try {
-            const pdf = await generatePDF(generatedFrames, $flipbookStore);
-            pdf.save('flipbook.pdf');
-        } catch (error) {
-            console.error('Error generating PDF:', error);
-            alert('Error generating PDF. Please try again.');
+    function handleDownloadPDF() {
+        if (!generatedPdf) {
+            console.error('PDF not generated yet.');
+            alert('Please generate the flipbook first.');
+            return;
         }
+        generatedPdf.save('flipbook.pdf');
     }
 </script>
 
